@@ -1,3 +1,15 @@
+/**
+ * のどかな縁側 — グローバルスタイル
+ * デザインビジョン：「縁側エディトリアル」
+ * 
+ * Awwwardsトレンドを和風に昇華：
+ * - 超大型明朝体見出し（Shippori Mincho）
+ * - エディトリアル誌のような非対称レイアウト
+ * - 障子紙のオフホワイト背景 × 苔緑・朱色・木茶色
+ * - スタッガーアニメーション & ホバーエフェクト
+ * - 大胆な余白でゆったりとした読み心地
+ */
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -40,71 +52,91 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
   /* 和風カスタムカラー */
-  --color-engawa: oklch(0.82 0.04 80);
-  --color-tatami: oklch(0.82 0.06 120);
-  --color-shoji: oklch(0.96 0.01 80);
-  --color-shu: oklch(0.55 0.18 25);
-  --color-koke: oklch(0.55 0.08 140);
-  --color-ki: oklch(0.78 0.04 80);
-  --font-sans: "Noto Sans JP", sans-serif;
-  --font-display: "Zen Maru Gothic", sans-serif;
+  --color-koke: var(--koke);
+  --color-shu: var(--shu);
+  --color-ki: var(--ki);
+  --color-nuri: var(--nuri);
+  --color-washi: var(--washi);
+  --color-sumi: var(--sumi);
 }
 
 :root {
-  --radius: 0.5rem;
-  /* 障子の生成り色背景 */
-  --background: oklch(0.96 0.01 80);
-  --foreground: oklch(0.25 0.02 50);
-  --card: oklch(0.98 0.008 80);
-  --card-foreground: oklch(0.25 0.02 50);
-  --popover: oklch(0.98 0.008 80);
-  --popover-foreground: oklch(0.25 0.02 50);
-  /* 苔の緑をプライマリに */
-  --primary: oklch(0.48 0.1 145);
-  --primary-foreground: oklch(0.98 0.005 80);
-  /* 畳色をセカンダリに */
-  --secondary: oklch(0.90 0.03 110);
-  --secondary-foreground: oklch(0.30 0.03 50);
-  --muted: oklch(0.93 0.015 90);
-  --muted-foreground: oklch(0.50 0.02 50);
-  /* 木の色をアクセントに */
-  --accent: oklch(0.88 0.04 80);
-  --accent-foreground: oklch(0.30 0.04 50);
-  /* 朱色をデストラクティブに */
-  --destructive: oklch(0.55 0.18 25);
-  --destructive-foreground: oklch(0.98 0.005 80);
-  --border: oklch(0.88 0.03 80);
-  --input: oklch(0.90 0.02 80);
-  --ring: oklch(0.48 0.1 145);
-  --chart-1: oklch(0.55 0.08 140);
-  --chart-2: oklch(0.65 0.06 80);
-  --chart-3: oklch(0.55 0.18 25);
-  --chart-4: oklch(0.70 0.04 200);
-  --chart-5: oklch(0.60 0.10 50);
-  --sidebar: oklch(0.94 0.02 80);
-  --sidebar-foreground: oklch(0.25 0.02 50);
-  --sidebar-primary: oklch(0.48 0.1 145);
-  --sidebar-primary-foreground: oklch(0.98 0.005 80);
-  --sidebar-accent: oklch(0.90 0.03 110);
-  --sidebar-accent-foreground: oklch(0.30 0.03 50);
-  --sidebar-border: oklch(0.88 0.03 80);
-  --sidebar-ring: oklch(0.48 0.1 145);
+  /* 和風カラーパレット */
+  --koke: oklch(0.42 0.08 145);        /* 苔緑 */
+  --shu: oklch(0.52 0.18 28);          /* 朱色 */
+  --ki: oklch(0.72 0.12 80);           /* 黄土色 */
+  --nuri: oklch(0.38 0.06 55);         /* 漆茶 */
+  --washi: oklch(0.97 0.01 85);        /* 和紙白（障子紙） */
+  --sumi: oklch(0.22 0.01 60);         /* 墨色 */
+
+  /* セマンティックカラー */
+  --primary: var(--koke);
+  --primary-foreground: oklch(0.97 0.01 85);
+  --secondary: oklch(0.94 0.02 85);
+  --secondary-foreground: var(--sumi);
+  --muted: oklch(0.94 0.015 80);
+  --muted-foreground: oklch(0.52 0.02 65);
+  --accent: oklch(0.92 0.025 80);
+  --accent-foreground: var(--sumi);
+  --destructive: oklch(0.52 0.18 28);
+  --destructive-foreground: oklch(0.97 0 0);
+  --border: oklch(0.86 0.02 75);
+  --input: oklch(0.88 0.02 75);
+  --ring: var(--koke);
+  --radius: 0.25rem;
+
+  /* 背景・テキスト */
+  --background: oklch(0.975 0.008 80);  /* 障子紙のオフホワイト */
+  --foreground: var(--sumi);
+  --card: oklch(0.99 0.005 80);
+  --card-foreground: var(--sumi);
+  --popover: oklch(0.99 0.005 80);
+  --popover-foreground: var(--sumi);
+
+  /* サイドバー */
+  --sidebar: oklch(0.97 0.01 80);
+  --sidebar-foreground: var(--sumi);
+  --sidebar-primary: var(--koke);
+  --sidebar-primary-foreground: oklch(0.97 0 0);
+  --sidebar-accent: oklch(0.93 0.02 80);
+  --sidebar-accent-foreground: var(--sumi);
+  --sidebar-border: oklch(0.88 0.02 75);
+  --sidebar-ring: var(--koke);
+
+  /* チャート */
+  --chart-1: var(--koke);
+  --chart-2: var(--shu);
+  --chart-3: var(--ki);
+  --chart-4: var(--nuri);
+  --chart-5: oklch(0.62 0.06 145);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
-    font-family: "Noto Sans JP", sans-serif;
+    font-family: 'Noto Serif JP', 'Shippori Mincho', 'Yu Mincho', '游明朝', serif;
     font-size: 18px;
     line-height: 1.9;
+    -webkit-font-smoothing: antialiased;
   }
+
   h1, h2, h3, h4, h5, h6 {
-    font-family: "Zen Maru Gothic", sans-serif;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', '游明朝', serif;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
   }
+
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),
@@ -116,6 +148,18 @@
   input[type="radio"]:not(:disabled) {
     @apply cursor-pointer;
   }
+
+  /* スクロールバーのカスタマイズ */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: oklch(0.93 0.02 80);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.65 0.04 80);
+    border-radius: 3px;
+  }
 }
 
 @layer components {
@@ -123,8 +167,8 @@
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
 
   .flex {
@@ -134,16 +178,168 @@
 
   @media (min-width: 640px) {
     .container {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
     }
   }
 
   @media (min-width: 1024px) {
     .container {
-      padding-left: 2rem;
-      padding-right: 2rem;
-      max-width: 960px;
+      padding-left: 3rem;
+      padding-right: 3rem;
+      max-width: 1320px;
     }
   }
+
+  /* エディトリアル見出し */
+  .editorial-heading {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  /* 記事カードのホバーエフェクト */
+  .article-card {
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px oklch(0.22 0.01 60 / 0.12);
+  }
+
+  /* 画像ズームコンテナ */
+  .img-zoom-container {
+    overflow: hidden;
+  }
+  .img-zoom-container img {
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .img-zoom-container:hover img {
+    transform: scale(1.06);
+  }
+
+  /* 区切り線（和風） */
+  .divider-washi {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      oklch(0.72 0.06 75),
+      transparent
+    );
+  }
+
+  /* 拍手ボタン */
+  .clap-btn {
+    position: relative;
+    overflow: visible;
+    transition: transform 0.15s ease;
+  }
+  .clap-btn:active {
+    transform: scale(0.92);
+  }
+
+  /* テキストリンク */
+  .text-link {
+    position: relative;
+    display: inline-block;
+  }
+  .text-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.3s ease;
+  }
+  .text-link:hover::after {
+    width: 100%;
+  }
+
+  /* 縦書き装飾テキスト */
+  .vertical-accent {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    letter-spacing: 0.15em;
+  }
+
+  /* セクションラベル */
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 500;
+  }
+
+  /* 記事本文 */
+  .prose-washi {
+    font-size: 1.05rem;
+    line-height: 2;
+    color: oklch(0.28 0.01 60);
+  }
+  .prose-washi p {
+    margin-bottom: 1.6em;
+    text-indent: 1em;
+  }
+  .prose-washi p:first-child {
+    text-indent: 0;
+  }
 }
+
+/* カスタムアニメーション */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes petal-burst {
+  0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(1) rotate(var(--rot)); opacity: 0; }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease both;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* スタッガーアニメーション用 */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }

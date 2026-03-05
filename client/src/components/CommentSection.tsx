@@ -1,12 +1,14 @@
 /**
- * コメントセクション
- * 「昭和の縁側」デザイン — 温かみのあるコメント欄
- * 自動承認方式（静的サイトのためローカルストレージで管理）
+ * CommentSection.tsx — のどかな縁側
+ * デザインビジョン：「縁側エディトリアル」
+ * 
+ * エディトリアル誌のようなコメント欄
+ * 左ボーダーアクセント、角張ったフォーム
  */
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, Send } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import type { Comment } from "@/lib/articles";
 import { formatDate } from "@/lib/articles";
 import { toast } from "sonner";
@@ -24,7 +26,6 @@ export default function CommentSection({
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
 
-  // ローカルストレージから追加コメントを読み込み
   useEffect(() => {
     const stored = localStorage.getItem(`comments-${articleId}`);
     if (stored) {
@@ -51,7 +52,6 @@ export default function CommentSection({
       date: new Date().toISOString().split("T")[0],
     };
 
-    // ローカルストレージに保存
     const stored = localStorage.getItem(`comments-${articleId}`);
     const extra = stored ? JSON.parse(stored) : [];
     extra.push(newComment);
@@ -63,51 +63,147 @@ export default function CommentSection({
     toast.success("コメントを投稿しました");
   };
 
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "0.85rem 1rem",
+    border: "1px solid oklch(0.86 0.02 75)",
+    background: "oklch(0.99 0.005 80)",
+    color: "var(--sumi)",
+    fontSize: "1rem",
+    fontFamily: "'Zen Kaku Gothic New', sans-serif",
+    lineHeight: 1.7,
+    outline: "none",
+    borderRadius: "2px",
+    transition: "border-color 0.2s",
+  };
+
   return (
-    <section className="mt-10 pt-8 border-t-2 border-border">
-      <h3 className="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2 mb-6">
-        <MessageCircle size={24} className="text-koke" />
-        コメント（{comments.length}件）
-      </h3>
+    <section
+      className="mt-12 pt-10"
+      style={{ borderTop: "1px solid oklch(0.86 0.02 75)" }}
+    >
+      {/* セクションヘッダー */}
+      <div className="flex items-center gap-3 mb-8">
+        <MessageCircle size={20} style={{ color: "var(--koke)" }} />
+        <h3
+          className="editorial-heading"
+          style={{ fontSize: "1.3rem", color: "var(--sumi)" }}
+        >
+          コメント
+        </h3>
+        <span
+          className="text-sm px-2 py-0.5"
+          style={{
+            background: "oklch(0.42 0.08 145 / 0.1)",
+            color: "var(--koke)",
+            fontFamily: "'Zen Kaku Gothic New', sans-serif",
+            borderRadius: "2px",
+          }}
+        >
+          {comments.length}件
+        </span>
+      </div>
 
       {/* コメント一覧 */}
-      {comments.length > 0 ? (
-        <div className="space-y-4 mb-8">
-          {comments.map((comment) => (
-            <div
-              key={comment.id}
-              className="bg-card rounded-lg p-4 sm:p-5 border border-border shadow-sm"
-            >
-              <div className="flex items-baseline justify-between mb-2">
-                <span className="font-display font-bold text-base text-foreground">
-                  {comment.author}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {formatDate(comment.date)}
-                </span>
-              </div>
-              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
-                {comment.content}
-              </p>
+      <div className="mb-10">
+        {comments.length > 0 ? (
+          <AnimatePresence>
+            <div className="flex flex-col gap-4">
+              {comments.map((comment, i) => (
+                <motion.div
+                  key={comment.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  style={{
+                    background: "oklch(0.99 0.005 80)",
+                    borderLeft: "3px solid var(--koke)",
+                    borderTop: "1px solid oklch(0.88 0.02 75)",
+                    borderRight: "1px solid oklch(0.88 0.02 75)",
+                    borderBottom: "1px solid oklch(0.88 0.02 75)",
+                    padding: "1.1rem 1.4rem",
+                  }}
+                >
+                  <div className="flex items-baseline justify-between mb-2">
+                    <span
+                      className="editorial-heading text-base"
+                      style={{ color: "var(--sumi)" }}
+                    >
+                      {comment.author}
+                    </span>
+                    <span
+                      className="text-sm"
+                      style={{
+                        color: "oklch(0.60 0.02 65)",
+                        fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                      }}
+                    >
+                      {formatDate(comment.date)}
+                    </span>
+                  </div>
+                  <p
+                    className="whitespace-pre-wrap leading-loose"
+                    style={{
+                      color: "oklch(0.38 0.02 60)",
+                      fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                      fontSize: "0.95rem",
+                    }}
+                  >
+                    {comment.content}
+                  </p>
+                </motion.div>
+              ))}
             </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-muted-foreground mb-8 text-center py-6 bg-muted/50 rounded-lg">
-          まだコメントはありません。最初のコメントを書いてみませんか？
-        </p>
-      )}
+          </AnimatePresence>
+        ) : (
+          <div
+            className="text-center py-10"
+            style={{
+              background: "oklch(0.96 0.01 80)",
+              border: "1px dashed oklch(0.82 0.03 75)",
+              borderRadius: "2px",
+            }}
+          >
+            <p
+              className="text-base"
+              style={{
+                color: "oklch(0.60 0.02 65)",
+                fontFamily: "'Zen Kaku Gothic New', sans-serif",
+              }}
+            >
+              まだコメントはありません。
+              <br />
+              最初のコメントを書いてみませんか？
+            </p>
+          </div>
+        )}
+      </div>
 
       {/* コメント投稿フォーム */}
-      <div className="bg-card rounded-lg p-5 sm:p-6 border border-border shadow-sm">
-        <h4 className="font-display text-lg font-bold mb-4 text-foreground">
+      <div
+        style={{
+          background: "oklch(0.975 0.01 80)",
+          border: "1px solid oklch(0.86 0.02 75)",
+          padding: "1.75rem",
+          borderRadius: "2px",
+        }}
+      >
+        <h4
+          className="editorial-heading mb-5"
+          style={{ fontSize: "1.1rem", color: "var(--sumi)" }}
+        >
           コメントを書く
         </h4>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label
               htmlFor="comment-author"
-              className="block text-base font-medium text-foreground mb-1.5"
+              className="block text-base font-medium mb-2"
+              style={{
+                color: "var(--sumi)",
+                fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                letterSpacing: "0.04em",
+              }}
             >
               お名前
             </label>
@@ -117,14 +213,21 @@ export default function CommentSection({
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
               placeholder="お名前を入力してください"
-              className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground text-base focus:ring-2 focus:ring-ring focus:border-ring outline-none transition-all"
+              style={inputStyle}
               maxLength={30}
+              onFocus={(e) => (e.target.style.borderColor = "var(--koke)")}
+              onBlur={(e) => (e.target.style.borderColor = "oklch(0.86 0.02 75)")}
             />
           </div>
           <div>
             <label
               htmlFor="comment-content"
-              className="block text-base font-medium text-foreground mb-1.5"
+              className="block text-base font-medium mb-2"
+              style={{
+                color: "var(--sumi)",
+                fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                letterSpacing: "0.04em",
+              }}
             >
               コメント
             </label>
@@ -134,17 +237,31 @@ export default function CommentSection({
               onChange={(e) => setContent(e.target.value)}
               placeholder="コメントを入力してください"
               rows={4}
-              className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground text-base focus:ring-2 focus:ring-ring focus:border-ring outline-none transition-all resize-y"
+              style={{ ...inputStyle, resize: "vertical" }}
               maxLength={500}
+              onFocus={(e) => (e.target.style.borderColor = "var(--koke)")}
+              onBlur={(e) => (e.target.style.borderColor = "oklch(0.86 0.02 75)")}
             />
           </div>
-          <Button
-            type="submit"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-8 py-3 h-auto rounded-lg shadow-md"
-          >
-            <Send size={18} className="mr-2" />
-            コメントを投稿する
-          </Button>
+          <div>
+            <button
+              type="submit"
+              className="flex items-center gap-2 text-base font-medium transition-all duration-200 hover:opacity-85"
+              style={{
+                background: "var(--koke)",
+                color: "oklch(0.97 0.01 85)",
+                padding: "0.75rem 1.8rem",
+                borderRadius: "2px",
+                fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                letterSpacing: "0.06em",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <Send size={16} />
+              コメントを投稿する
+            </button>
+          </div>
         </form>
       </div>
     </section>

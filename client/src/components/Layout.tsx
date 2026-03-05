@@ -1,73 +1,119 @@
 /**
- * Layout コンポーネント
- * 「昭和の縁側」デザイン — ノスタルジック・ウォーム
+ * Layout.tsx — のどかな縁側
+ * デザインビジョン：「縁側エディトリアル」
  * 
- * 木目テクスチャのヘッダー・フッター
- * 一カラム構造でスマホファーストに最適化
- * シンプルなナビゲーション（70代以上向け）
+ * Awwwardsトレンドを和風に昇華：
+ * - スクロールで変化するフローティングヘッダー
+ * - 縦書きアクセント文字
+ * - エディトリアル誌のような余白とタイポグラフィ
  */
 
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { useState } from "react";
-import { Menu, X, Home, BookOpen, Newspaper } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
-const HEADER_WOOD_URL =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310419663031129836/PAtsuYqFzkogYquuPuQ9VE/header-wood-Kgwuq4hEtvzbSF6S8w2CUb.webp";
 const FOOTER_SEASONAL_URL =
   "https://d2xsxph8kpxj0f.cloudfront.net/310419663031129836/PAtsuYqFzkogYquuPuQ9VE/footer-seasonal-YCU47QNPpe4sQZjqVZiwye.webp";
 
-const navItems = [
-  { href: "/", label: "ホーム", icon: Home },
-  { href: "/diary", label: "日記", icon: BookOpen },
-  { href: "/news", label: "ニュース", icon: Newspaper },
+const HEADER_WOOD_URL =
+  "https://d2xsxph8kpxj0f.cloudfront.net/310419663031129836/PAtsuYqFzkogYquuPuQ9VE/header-wood-Kgwuq4hEtvzbSF6S8w2CUb.webp";
+
+const navLinks = [
+  { href: "/", label: "ホーム", en: "Home" },
+  { href: "/diary", label: "日記", en: "Diary" },
+  { href: "/news", label: "ニュース", en: "News" },
 ];
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export default function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* ヘッダー：木目テクスチャ */}
+    <div className="min-h-screen flex flex-col" style={{ background: "oklch(0.975 0.008 80)" }}>
+      {/* フローティングヘッダー */}
       <header
-        className="relative overflow-hidden"
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
         style={{
-          backgroundImage: `url(${HEADER_WOOD_URL})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          background: scrolled
+            ? "oklch(0.975 0.008 80 / 0.95)"
+            : "transparent",
+          backdropFilter: scrolled ? "blur(12px)" : "none",
+          borderBottom: scrolled ? "1px solid oklch(0.86 0.02 75)" : "none",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40" />
-        <div className="relative container py-5 sm:py-6">
-          <div className="flex items-center justify-between">
-            {/* サイトタイトル */}
+        <div className="container">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            {/* ロゴ */}
             <Link href="/">
-              <h1 className="font-display text-2xl sm:text-3xl font-bold text-white drop-shadow-lg tracking-wide">
-                のどかな縁側
-              </h1>
-              <p className="text-white/80 text-sm sm:text-base mt-0.5 drop-shadow">
-                寺尾ワカメの個人サイト
-              </p>
+              <div className="group flex items-baseline gap-3">
+                <span
+                  className="editorial-heading text-xl sm:text-2xl transition-colors duration-300"
+                  style={{ color: "var(--sumi)" }}
+                >
+                  のどかな縁側
+                </span>
+                <span
+                  className="hidden sm:inline text-xs transition-colors duration-300"
+                  style={{
+                    color: "var(--muted-foreground)",
+                    fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                    letterSpacing: "0.12em",
+                  }}
+                >
+                  寺尾ワカメ
+                </span>
+              </div>
             </Link>
 
             {/* デスクトップナビ */}
-            <nav className="hidden sm:flex items-center gap-2">
-              {navItems.map((item) => {
-                const isActive = location === item.href;
-                const Icon = item.icon;
+            <nav className="hidden md:flex items-center gap-0">
+              {navLinks.map((link) => {
+                const isActive = location === link.href;
                 return (
-                  <Link key={item.href} href={item.href}>
-                    <span
-                      className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-lg font-medium transition-all duration-200 ${
-                        isActive
-                          ? "bg-white/30 text-white shadow-inner"
-                          : "text-white/90 hover:bg-white/20 hover:text-white"
-                      }`}
-                    >
-                      <Icon size={20} />
-                      {item.label}
-                    </span>
+                  <Link key={link.href} href={link.href}>
+                    <div className="relative px-5 py-2 group cursor-pointer">
+                      <span
+                        className="block text-base font-medium transition-colors duration-200"
+                        style={{
+                          fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                          color: isActive ? "var(--koke)" : "var(--sumi)",
+                          letterSpacing: "0.06em",
+                        }}
+                      >
+                        {link.label}
+                      </span>
+                      {/* アクティブ & ホバー下線 */}
+                      <span
+                        className="absolute bottom-0 left-5 right-5 h-0.5 transition-transform duration-300 origin-left"
+                        style={{
+                          background: "var(--koke)",
+                          transform: isActive ? "scaleX(1)" : "scaleX(0)",
+                        }}
+                      />
+                      <span
+                        className="absolute bottom-0 left-5 right-5 h-0.5 transition-transform duration-300 origin-left group-hover:scale-x-100"
+                        style={{
+                          background: "oklch(0.42 0.08 145 / 0.4)",
+                          transform: "scaleX(0)",
+                        }}
+                      />
+                    </div>
                   </Link>
                 );
               })}
@@ -75,94 +121,175 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             {/* モバイルメニューボタン */}
             <button
-              className="sm:hidden p-3 rounded-lg bg-white/20 text-white active:bg-white/30 transition-colors"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="メニューを開く"
+              className="md:hidden p-2"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="メニュー"
             >
-              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+              {mobileOpen ? (
+                <X size={26} style={{ color: "var(--sumi)" }} />
+              ) : (
+                <Menu size={26} style={{ color: "var(--sumi)" }} />
+              )}
             </button>
           </div>
-
-          {/* モバイルメニュー */}
-          <AnimatePresence>
-            {mobileMenuOpen && (
-              <motion.nav
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                className="sm:hidden overflow-hidden mt-4"
-              >
-                <div className="flex flex-col gap-2 pb-2">
-                  {navItems.map((item) => {
-                    const isActive = location === item.href;
-                    const Icon = item.icon;
-                    return (
-                      <Link key={item.href} href={item.href}>
-                        <span
-                          className={`flex items-center gap-3 px-5 py-3.5 rounded-lg text-lg font-medium transition-all ${
-                            isActive
-                              ? "bg-white/30 text-white"
-                              : "text-white/90 hover:bg-white/20"
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          <Icon size={22} />
-                          {item.label}
-                        </span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </motion.nav>
-            )}
-          </AnimatePresence>
         </div>
+
+        {/* モバイルメニュー */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+              className="md:hidden"
+              style={{
+                background: "oklch(0.975 0.008 80 / 0.97)",
+                backdropFilter: "blur(12px)",
+                borderBottom: "1px solid oklch(0.86 0.02 75)",
+              }}
+            >
+              <nav className="container py-4 flex flex-col">
+                {navLinks.map((link) => {
+                  const isActive = location === link.href;
+                  return (
+                    <Link key={link.href} href={link.href}>
+                      <div
+                        className="py-4 flex items-center justify-between"
+                        style={{ borderBottom: "1px solid oklch(0.88 0.02 75)" }}
+                      >
+                        <span
+                          className="text-xl font-medium"
+                          style={{
+                            fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                            color: isActive ? "var(--koke)" : "var(--sumi)",
+                          }}
+                        >
+                          {link.label}
+                        </span>
+                        <span
+                          className="text-xs"
+                          style={{
+                            color: "var(--muted-foreground)",
+                            fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                            letterSpacing: "0.15em",
+                          }}
+                        >
+                          {link.en}
+                        </span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* メインコンテンツ */}
-      <main className="flex-1">
+      <main className="flex-1 pt-16 sm:pt-20">
         {children}
       </main>
 
       {/* フッター */}
       <footer className="mt-auto">
         {/* 季節の花ボーダー */}
-        <div className="w-full overflow-hidden">
+        <div className="w-full h-20 sm:h-28 overflow-hidden">
           <img
             src={FOOTER_SEASONAL_URL}
-            alt="季節の花々"
-            className="w-full h-20 sm:h-28 object-cover opacity-60"
+            alt=""
+            className="w-full h-full object-cover object-top opacity-70"
           />
         </div>
+
+        {/* フッター本体 */}
         <div
-          className="relative"
+          className="relative py-12 sm:py-16"
           style={{
             backgroundImage: `url(${HEADER_WOOD_URL})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         >
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="relative container py-6 sm:py-8">
-            <div className="text-center text-white/90">
-              <p className="font-display text-xl font-bold mb-2 drop-shadow">
-                のどかな縁側
-              </p>
-              <p className="text-sm text-white/70 mb-4">
-                寺尾ワカメの個人サイト
-              </p>
-              <nav className="flex justify-center gap-6 mb-4">
-                {navItems.map((item) => (
-                  <Link key={item.href} href={item.href}>
-                    <span className="text-white/80 hover:text-white text-base transition-colors">
-                      {item.label}
-                    </span>
-                  </Link>
-                ))}
-              </nav>
-              <p className="text-xs text-white/50">
-                &copy; 2026 寺尾ワカメ All Rights Reserved.
+          <div
+            className="absolute inset-0"
+            style={{ background: "oklch(0.18 0.04 55 / 0.72)" }}
+          />
+          <div className="relative container">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-16 mb-10">
+              {/* サイト情報 */}
+              <div className="sm:col-span-2">
+                <h3
+                  className="editorial-heading text-3xl sm:text-4xl mb-4"
+                  style={{ color: "oklch(0.97 0.01 85)" }}
+                >
+                  のどかな縁側
+                </h3>
+                <p
+                  className="text-base leading-loose mb-3"
+                  style={{
+                    color: "oklch(0.78 0.02 85)",
+                    fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                  }}
+                >
+                  「のどかな縁側」は、寺尾ワカメが運営する個人サイトです。
+                  日々の暮らしの中で感じたことや、気になったニュースを
+                  のんびりと発信しています。
+                </p>
+                <p
+                  className="text-sm"
+                  style={{
+                    color: "oklch(0.60 0.02 75)",
+                    fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  コメントや拍手で気軽に交流していただけると嬉しいです。
+                </p>
+              </div>
+
+              {/* ナビゲーション */}
+              <div>
+                <p
+                  className="section-label mb-5"
+                  style={{ color: "oklch(0.55 0.02 75)" }}
+                >
+                  Navigation
+                </p>
+                <nav className="flex flex-col gap-3">
+                  {navLinks.map((link) => (
+                    <Link key={link.href} href={link.href}>
+                      <span
+                        className="text-link text-lg transition-colors duration-200 hover:opacity-100"
+                        style={{
+                          color: "oklch(0.78 0.02 85)",
+                          fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                          opacity: 0.85,
+                        }}
+                      >
+                        {link.label}
+                      </span>
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+            </div>
+
+            {/* コピーライト */}
+            <div
+              className="pt-8"
+              style={{ borderTop: "1px solid oklch(0.97 0.01 85 / 0.12)" }}
+            >
+              <p
+                className="text-sm text-center"
+                style={{
+                  color: "oklch(0.55 0.02 75)",
+                  fontFamily: "'Zen Kaku Gothic New', sans-serif",
+                  letterSpacing: "0.1em",
+                }}
+              >
+                © 2026 寺尾ワカメ / のどかな縁側
               </p>
             </div>
           </div>
