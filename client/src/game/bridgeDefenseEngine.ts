@@ -141,7 +141,7 @@ const gatePlans: GatePlan[] = [
   {
     distance: 55,
     left: { op: 'add', value: 10, label: '+10', color: COLORS.good },
-    right: { op: 'subtract', value: 6, label: '-6', color: COLORS.bad },
+    right: { op: 'add', value: 6, label: '+6', color: COLORS.good },
   },
   {
     distance: 118,
@@ -150,7 +150,7 @@ const gatePlans: GatePlan[] = [
   },
   {
     distance: 185,
-    left: { op: 'subtract', value: 12, label: '-12', color: COLORS.bad },
+    left: { op: 'add', value: 12, label: '+12', color: COLORS.good },
     right: { op: 'multiply', value: 3, label: '×3', color: COLORS.good },
   },
   {
@@ -161,7 +161,7 @@ const gatePlans: GatePlan[] = [
   {
     distance: 318,
     left: { op: 'multiply', value: 2, label: '×2', color: COLORS.good },
-    right: { op: 'subtract', value: 28, label: '-28', color: COLORS.bad },
+    right: { op: 'subtract', value: 10, label: '-10', color: COLORS.bad },
   },
   {
     distance: 390,
@@ -170,19 +170,19 @@ const gatePlans: GatePlan[] = [
   },
   {
     distance: 455,
-    left: { op: 'subtract', value: 45, label: '-45', color: COLORS.bad },
+    left: { op: 'subtract', value: 15, label: '-15', color: COLORS.bad },
     right: { op: 'multiply', value: 2, label: '×2', color: COLORS.good },
   },
 ];
 
 const wavePlans: WavePlan[] = [
-  { distance: 28, type: 'zombie', count: 12, spread: 160 },
-  { distance: 86, type: 'zombie', count: 20, spread: 210 },
-  { distance: 150, type: 'runner', count: 14, spread: 220 },
-  { distance: 218, type: 'zombie', count: 28, spread: 240 },
-  { distance: 292, type: 'tank', count: 5, spread: 210 },
-  { distance: 352, type: 'runner', count: 18, spread: 250 },
-  { distance: 420, type: 'zombie', count: 34, spread: 260 },
+  { distance: 28, type: 'zombie', count: 8, spread: 160 },
+  { distance: 86, type: 'zombie', count: 14, spread: 210 },
+  { distance: 150, type: 'runner', count: 9, spread: 220 },
+  { distance: 218, type: 'zombie', count: 20, spread: 240 },
+  { distance: 292, type: 'tank', count: 3, spread: 210 },
+  { distance: 352, type: 'runner', count: 12, spread: 250 },
+  { distance: 420, type: 'zombie', count: 24, spread: 260 },
 ];
 
 export class BridgeDefenseEngine {
@@ -213,9 +213,9 @@ export class BridgeDefenseEngine {
   private player: PlayerState = {
     x: GAME_WIDTH / 2,
     targetX: GAME_WIDTH / 2,
-    soldiers: 3,
+    soldiers: 8,
     attackDamage: 1,
-    shotsPerSecondPerSoldier: 2,
+    shotsPerSecondPerSoldier: 2.4,
     bulletAccumulator: 0,
   };
 
@@ -228,8 +228,8 @@ export class BridgeDefenseEngine {
 
   private boss: BossState = {
     active: false,
-    hp: 200,
-    maxHp: 200,
+    hp: 120,
+    maxHp: 120,
     x: GAME_WIDTH / 2,
     y: 94,
     radius: 42,
@@ -359,15 +359,15 @@ export class BridgeDefenseEngine {
     this.player = {
       x: GAME_WIDTH / 2,
       targetX: GAME_WIDTH / 2,
-      soldiers: 3,
+      soldiers: 8,
       attackDamage: 1,
-      shotsPerSecondPerSoldier: 2,
+      shotsPerSecondPerSoldier: 2.4,
       bulletAccumulator: 0,
     };
     this.boss = {
       active: false,
-      hp: 200,
-      maxHp: 200,
+      hp: 120,
+      maxHp: 120,
       x: GAME_WIDTH / 2,
       y: 94,
       radius: 42,
@@ -495,18 +495,18 @@ export class BridgeDefenseEngine {
 
   private spawnEnemy(type: EnemyType, x: number, y: number) {
     let hp = 1;
-    let speed = 34;
+    let speed = 26;
     let radius = 9;
     let contactDamage = 1;
     if (type === 'runner') {
       hp = 1;
-      speed = 66;
+      speed = 48;
       radius = 8;
     } else if (type === 'tank') {
-      hp = 10;
-      speed = 22;
+      hp = 7;
+      speed = 17;
       radius = 15;
-      contactDamage = 5;
+      contactDamage = 3;
     }
     this.enemies.push({
       id: this.nextEnemyId++,
@@ -527,7 +527,7 @@ export class BridgeDefenseEngine {
   private spawnBoss() {
     this.boss.active = true;
     this.boss.hp = this.boss.maxHp;
-    this.boss.attackTimer = 3.5;
+    this.boss.attackTimer = 4.5;
     this.boss.telegraph = 0;
     this.screenShake = 12;
     this.addFloatingText(GAME_WIDTH / 2, 170, 'BOSS INCOMING', COLORS.boss, 20);
@@ -673,15 +673,15 @@ export class BridgeDefenseEngine {
     if (this.boss.telegraph > 0) {
       this.boss.telegraph -= dt;
       if (this.boss.telegraph <= 0) {
-        const hit = Math.abs(this.player.x - this.boss.targetX) < 54;
-        if (hit) this.damageSquad(Math.max(4, Math.ceil(this.player.soldiers * 0.12)), this.player.x, PLAYER_Y - 20);
-        this.screenShake = 8;
-        this.spawnBurst(this.boss.targetX, PLAYER_Y - 35, COLORS.boss, 26);
-        this.boss.attackTimer = 4.2;
+        const hit = Math.abs(this.player.x - this.boss.targetX) < 44;
+        if (hit) this.damageSquad(Math.max(2, Math.ceil(this.player.soldiers * 0.06)), this.player.x, PLAYER_Y - 20);
+        this.screenShake = 6;
+        this.spawnBurst(this.boss.targetX, PLAYER_Y - 35, COLORS.boss, 22);
+        this.boss.attackTimer = 5.2;
       }
     } else if (this.boss.attackTimer <= 0) {
       this.boss.targetX = this.clampX(56 + Math.random() * (GAME_WIDTH - 112));
-      this.boss.telegraph = 1.1;
+      this.boss.telegraph = 1.45;
       this.addFloatingText(this.boss.targetX, PLAYER_Y - 110, 'DANGER', COLORS.boss, 14);
     }
   }
@@ -885,8 +885,8 @@ export class BridgeDefenseEngine {
     ctx.font = '12px system-ui, sans-serif';
     ctx.fillText('数の暴力 vs 数の暴力', GAME_WIDTH / 2, 260);
 
-    this.renderSampleGate(GAME_WIDTH / 2 - 70, 336, '×3', COLORS.good);
-    this.renderSampleGate(GAME_WIDTH / 2 + 70, 336, '-12', COLORS.bad);
+    this.renderSampleGate(GAME_WIDTH / 2 - 70, 336, '+10', COLORS.good);
+    this.renderSampleGate(GAME_WIDTH / 2 + 70, 336, '+6', COLORS.good);
     ctx.fillStyle = COLORS.hud;
     ctx.font = '13px system-ui, sans-serif';
     ctx.fillText('ドラッグ / マウス移動で有利なゲートへ', GAME_WIDTH / 2, 418);
