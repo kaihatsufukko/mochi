@@ -1,0 +1,20 @@
+{
+  "name": "last-z-ad-game",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host --port 5199 --strictPort",
+    "build": "vite build",
+    "test": "vitest run",
+    "playtest": "node scripts/playtest.mjs"
+  },
+  "dependencies": {
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0",
+    "vitest": "^2.1.0",
+    "playwright-core": "^1.49.0"
+  }
+}
