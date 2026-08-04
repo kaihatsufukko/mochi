@@ -292,8 +292,9 @@ export class HUD {
     const el = document.createElement('div');
     el.className = 'hud-popup';
     el.textContent = String(text);
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
+    // 連続発生時に同一座標で潰れないよう軽くジッタを入れる
+    el.style.left = (x + (Math.random() * 40 - 20)) + 'px';
+    el.style.top = (y + (Math.random() * 24 - 12)) + 'px';
     el.style.color = POPUP_COLORS[kind] || POPUP_COLORS.dmg;
     el.style.fontSize = Math.max(22, Math.round(this._w() * 0.065)) + 'px';
     this.root.appendChild(el);

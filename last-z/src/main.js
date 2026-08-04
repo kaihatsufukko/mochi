@@ -126,6 +126,9 @@ function checkProgress(dt) {
     } else if (!hordeStarted && ctx.playerZ <= LEVEL.hordeZ + 16) {
       hordeStarted = true;
       ctx.phase = 'horde';
+      // 大群戦は霧を少し奥へ引き、迫り来る大群の圧を見せる (全個体は45u以内)
+      scene.fog.near = 48;
+      scene.fog.far = 88;
       audio.play('horde_start');
       hud.banner('HORDE!', 'warn');
       horde.activate();
