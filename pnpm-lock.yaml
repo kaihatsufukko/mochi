@@ -16,6 +16,12 @@ importers:
 
   .:
     dependencies:
+      '@babylonjs/core':
+        specifier: ^9.19.1
+        version: 9.19.1
+      '@babylonjs/gui':
+        specifier: ^9.19.1
+        version: 9.19.1(@babylonjs/core@9.19.1)
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.64.0(react@19.2.1))
@@ -331,6 +337,14 @@ packages:
   '@babel/types@7.28.4':
     resolution: {integrity: sha512-bkFqkLhh3pMBUQQkpVgWDWq/lqzc2678eUyDlTBhRqhCHFguYYGM0Efga7tYk4TogG/3x0EEl66/OQ+WGbWB/Q==}
     engines: {node: '>=6.9.0'}
+
+  '@babylonjs/core@9.19.1':
+    resolution: {integrity: sha512-Uu2VchxBGBEEUh73YoobP1U5aNGO7AH4nZB2hs1azxd9fWxj5C1obIVs5wcA05fppAsYPJiNy/+HfaaPdoqbbQ==}
+
+  '@babylonjs/gui@9.19.1':
+    resolution: {integrity: sha512-H8ys+m44OoRREfaGxI+xt/IP5wLOStcXAS2mAgj6B9gZlNkE/iRR+BkNLIIx7a2VUDxEyH+TffgRhUuew9AmMQ==}
+    peerDependencies:
+      '@babylonjs/core': ^9.0.0
 
   '@braintree/sanitize-url@7.1.1':
     resolution: {integrity: sha512-i1L7noDNxtFyL5DmZafWy1wRVhGehQmzZaz1HiN5e7iylJMSZR7ekOV7NsIqa5qBldlLrsKv4HbgFUVlQrz8Mw==}
@@ -3660,6 +3674,12 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
+
+  '@babylonjs/core@9.19.1': {}
+
+  '@babylonjs/gui@9.19.1(@babylonjs/core@9.19.1)':
+    dependencies:
+      '@babylonjs/core': 9.19.1
 
   '@braintree/sanitize-url@7.1.1': {}
 
